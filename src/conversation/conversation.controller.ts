@@ -1,8 +1,11 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { StartConversationDto } from './dto/start-conversation.dto';
+
 @Controller('conversation')
 export class ConversationController {
+  @HttpCode(HttpStatus.OK)
   @Post()
-  startConversation() {
-    return 'Start Conversation';
+  startConversation(@Body() dto: StartConversationDto) {
+    return dto;
   }
 }
