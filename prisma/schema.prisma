@@ -16,8 +16,8 @@ datasource db {
 model Conversation {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   input String
-  response String
-  respondedAt DateTime
+  response String?
+  respondedAt DateTime?
   status ConversationStatus
 }
 
