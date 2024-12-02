@@ -101,7 +101,15 @@ A plataforma é desenvolvida utilizando **Nest.js** como framework backend e out
    http://localhost:3000
    ```
 
----
+## **Acesso à Documentação da API**
+
+Após rodar o servidor, você pode acessar a documentação interativa gerada pelo Swagger no seguinte endereço:
+
+```
+http://localhost:3000/api
+```
+
+Essa documentação fornece uma visão geral das rotas disponíveis, os parâmetros esperados, e os tipos de retorno, facilitando o uso e testes da API.
 
 ## **Estrutura do Projeto**
 
