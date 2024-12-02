@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StartConversationDto } from './dto/start-conversation.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HfInference } from '@huggingface/inference';
@@ -45,5 +45,23 @@ export class ConversationService {
     });
 
     return conversationUpdated;
+  }
+
+  readAll() {
+    return this.prisma.conversation.findMany();
+  }
+
+  async readById(id: string) {
+    const foundConversation = await this.prisma.conversation.findUnique({
+      where: { id },
+    });
+
+    console.log(foundConversation);
+
+    if (!foundConversation) {
+      throw new NotFoundException('Conversation not found');
+    }
+
+    return foundConversation;
   }
 }
