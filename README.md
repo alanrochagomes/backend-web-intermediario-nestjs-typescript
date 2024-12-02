@@ -1,3 +1,5 @@
+### README.md (Atualizado)
+
 # **Biblioteca de Recursos de Aprendizado com Assistente Inteligente**
 
 ## **Descrição**
@@ -62,33 +64,41 @@ A plataforma é desenvolvida utilizando **Nest.js** como framework backend e out
 2. **Instalar as dependências**
 
    ```bash
-   npm install
+   npm ci
    ```
 
 3. **Configurar as variáveis de ambiente**
-   Crie um arquivo `.env` na raiz do projeto e configure as variáveis:
 
-   ```env
-   DATABASE_URL=mongodb://localhost:27017/nome-do-banco
-   ```
+   - Copie o arquivo `.env.example` para `.env` e configure as variáveis:
+     ```bash
+     cp .env.example .env
+     ```
+   - Configure as variáveis no arquivo `.env`.
 
-4. **Inicializar o Prisma**
+4. **Garantir o Banco de Dados**
+
+   - Certifique-se de que o banco de dados MongoDB está rodando.
+   - Execute o comando abaixo para garantir que o banco de dados está sincronizado:
+     ```bash
+     npx prisma db push
+     ```
+
+5. **Gerar os Arquivos do Prisma**
 
    ```bash
-   npx prisma init
    npx prisma generate
    ```
 
-5. **Rodar o servidor**
+6. **Rodar o servidor**
 
    ```bash
    npm run start:dev
    ```
 
-6. **Acessar a documentação Swagger**
+7. **Acessar a documentação Swagger**
    Após rodar o servidor, acesse:
    ```
-   http://localhost:3000/api
+   http://localhost:3000
    ```
 
 ---
