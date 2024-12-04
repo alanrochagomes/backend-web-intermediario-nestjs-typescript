@@ -13,15 +13,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Conversation {
+enum ConversationStatus {
+  PROCESSING
+  COMPLETED
+}
+
+model ConversationMessage {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   input String
   response String?
   respondedAt DateTime?
   status ConversationStatus
-}
-
-enum ConversationStatus {
-  PROCESSING
-  COMPLETED
 }

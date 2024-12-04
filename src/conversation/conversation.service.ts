@@ -13,7 +13,7 @@ export class ConversationService {
 
   async startConversation(dto: StartConversationDto) {
     // Create conversation (pending)
-    const conversation = await this.prisma.conversation.create({
+    const conversation = await this.prisma.conversationMessage.create({
       data: {
         input: dto.input,
         status: 'PROCESSING',
@@ -37,7 +37,7 @@ export class ConversationService {
     const response = chatCompletion.choices[0].message;
 
     // Update conversation with response and respondedAt
-    const conversationUpdated = await this.prisma.conversation.update({
+    const conversationUpdated = await this.prisma.conversationMessage.update({
       where: { id: conversation.id },
       data: {
         response: response.content,
@@ -50,11 +50,11 @@ export class ConversationService {
   }
 
   readAll() {
-    return this.prisma.conversation.findMany();
+    return this.prisma.conversationMessage.findMany();
   }
 
   async readById(id: string) {
-    const foundConversation = await this.prisma.conversation.findUnique({
+    const foundConversation = await this.prisma.conversationMessage.findUnique({
       where: { id },
     });
 
