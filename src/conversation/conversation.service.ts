@@ -1,24 +1,37 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { StartConversationDto } from './dto/start-conversation.dto';
+import { UpsertConversationDto } from './dto/upsert-conversation.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HfInference } from '@huggingface/inference';
+import { Prisma } from '@prisma/client';
+import { ObjectId } from 'bson';
 
 @Injectable()
 export class ConversationService {
-  private readonly history = [];
-
   private readonly client = new HfInference(process.env.HUGGING_FACE_API_TOKEN);
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async startConversation(dto: StartConversationDto) {
-    // Create conversation (pending)
-    const conversation = await this.prisma.conversationMessage.create({
-      data: {
+  async createOrUpdateConversation(dto: UpsertConversationDto) {
+    if (!dto.id) {
+      dto.id = new ObjectId().toString();
+    }
+
+    // Create conversation & message (pending)
+    const conversationMessage: Prisma.ConversationMessageCreateWithoutConversationInput =
+      {
         input: dto.input,
         status: 'PROCESSING',
-      },
+      };
+
+    const conversation = await this.prisma.conversation.upsert({
+      where: { id: dto.id },
+      create: { messages: { create: conversationMessage } },
+      update: { messages: { create: conversationMessage } },
+      include: { messages: { select: { id: true } } },
     });
+
+    const conversationMessageId =
+      conversation.messages[conversation.messages.length - 1].id;
 
     // Call LLM API
     const chatCompletion = await this.client.chatCompletion({
@@ -38,7 +51,7 @@ export class ConversationService {
 
     // Update conversation with response and respondedAt
     const conversationUpdated = await this.prisma.conversationMessage.update({
-      where: { id: conversation.id },
+      where: { id: conversationMessageId },
       data: {
         response: response.content,
         respondedAt: new Date(),
@@ -57,8 +70,6 @@ export class ConversationService {
     const foundConversation = await this.prisma.conversationMessage.findUnique({
       where: { id },
     });
-
-    console.log(foundConversation);
 
     if (!foundConversation) {
       throw new NotFoundException('Conversation not found');

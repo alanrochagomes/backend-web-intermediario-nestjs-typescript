@@ -7,10 +7,11 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { StartConversationDto } from './dto/start-conversation.dto';
+import { UpsertConversationDto as UpsertConversationDto } from './dto/upsert-conversation.dto';
 import { ConversationService } from './conversation.service';
 import {
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
@@ -21,7 +22,18 @@ export class ConversationController {
   constructor(private readonly conversationService: ConversationService) {}
 
   @ApiOkResponse({
-    description: 'Conversation started successfully.',
+    description: 'Conversation updated successfully.',
+    example: {
+      id: '6750c4a2c58ecc5319b3f012',
+      input: 'What is microservices?',
+      response:
+        'Microservices is an architectural style that structures an application as a collection of small, independent services that communicate with each other using lightweight protocols and APIs. Each service is responsible for a specific business capability and can be developed, tested, and deployed independently.',
+      respondedAt: '2024-12-04T21:07:55.646Z',
+      status: 'COMPLETED',
+    },
+  })
+  @ApiCreatedResponse({
+    description: 'Conversation created successfully.',
     example: {
       id: '6750c4a2c58ecc5319b3f012',
       input: 'What is microservices?',
@@ -40,12 +52,13 @@ export class ConversationController {
     },
   })
   @ApiOperation({
-    summary: 'Start a conversation.',
+    summary: 'Create or update a conversation.',
   })
+  // TODO: Return 201 (Created) or 200 (OK) if create or updated
   @HttpCode(HttpStatus.OK)
   @Post()
-  startConversation(@Body() dto: StartConversationDto) {
-    return this.conversationService.startConversation(dto);
+  createOrUpdateConversation(@Body() dto: UpsertConversationDto) {
+    return this.conversationService.createOrUpdateConversation(dto);
   }
 
   @ApiOkResponse({

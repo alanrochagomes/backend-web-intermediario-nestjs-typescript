@@ -24,4 +24,11 @@ model ConversationMessage {
   response String?
   respondedAt DateTime?
   status ConversationStatus
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String @db.ObjectId
+}
+
+model Conversation {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  messages ConversationMessage[]
 }
