@@ -26,7 +26,9 @@ export class ConversationService {
       messages: [
         {
           role: 'user',
-          content: dto.input,
+          content: `Você é um assistente especializado em ajudar alunos de programação a encontrar recursos de aprendizado e responder perguntas técnicas, sugerindo materiais personalizados. Você responde de forma curta e objetiva, e amplia conforme o estudante pergunta.
+          ---
+          User input: ${dto.input}`,
         },
       ],
       max_tokens: 500,
