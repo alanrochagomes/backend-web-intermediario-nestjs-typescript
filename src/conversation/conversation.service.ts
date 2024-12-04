@@ -27,11 +27,32 @@ export class ConversationService {
       where: { id: dto.id },
       create: { messages: { create: conversationMessage } },
       update: { messages: { create: conversationMessage } },
-      include: { messages: { select: { id: true } } },
+      include: {
+        messages: {
+          select: {
+            id: true,
+            input: true,
+            response: true,
+          },
+        },
+      },
     });
 
     const conversationMessageId =
       conversation.messages[conversation.messages.length - 1].id;
+
+    const messageHistory = conversation.messages
+      .flatMap((message) => [
+        {
+          role: 'user',
+          content: message.input,
+        },
+        message.response && {
+          role: 'assistant',
+          content: message.response,
+        },
+      ])
+      .filter(Boolean);
 
     // Call LLM API
     const chatCompletion = await this.client.chatCompletion({
@@ -39,10 +60,9 @@ export class ConversationService {
       messages: [
         {
           role: 'user',
-          content: `Você é um assistente especializado em ajudar alunos de programação a encontrar recursos de aprendizado e responder perguntas técnicas, sugerindo materiais personalizados. Você responde de forma curta e objetiva, e amplia conforme o estudante pergunta.
-          ---
-          User input: ${dto.input}`,
+          content: `Você é um assistente especializado em ajudar alunos de programação a encontrar recursos de aprendizado e responder perguntas técnicas, sugerindo materiais personalizados. Você responde de forma curta e objetiva, e amplia conforme o estudante pergunta.`,
         },
+        ...messageHistory,
       ],
       max_tokens: 500,
     });
