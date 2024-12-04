@@ -22,8 +22,14 @@ export class ConversationController {
 
   @ApiOkResponse({
     description: 'Conversation started successfully.',
-    example:
-      'Microservices is an architectural style that structures an application as a collection of small, independent services that communicate with each other using lightweight protocols and APIs. Each service is responsible for a specific business capability and can be developed, tested, and deployed independently.',
+    example: {
+      id: '6750c4a2c58ecc5319b3f012',
+      input: 'What is microservices?',
+      response:
+        'Microservices is an architectural style that structures an application as a collection of small, independent services that communicate with each other using lightweight protocols and APIs. Each service is responsible for a specific business capability and can be developed, tested, and deployed independently.',
+      respondedAt: '2024-12-04T21:07:55.646Z',
+      status: 'COMPLETED',
+    },
   })
   @ApiBadRequestResponse({
     description: 'Request body validation error.',
